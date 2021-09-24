@@ -16,6 +16,7 @@ import uz.pdp.yurakamri.controller.RegionController;
 import uz.pdp.yurakamri.entity.Ketmon;
 import uz.pdp.yurakamri.entity.Region;
 import uz.pdp.yurakamri.entity.enums.Role;
+import uz.pdp.yurakamri.payload.ApiResponse;
 import uz.pdp.yurakamri.repository.RegionRepository;
 import uz.pdp.yurakamri.repository.UserRepository;
 
@@ -56,7 +57,14 @@ public class BaseBot extends TelegramLongPollingBot {
         userChatId = update.getMessage().getChatId();
         String text = update.getMessage().getText();
         if (update.hasMessage()) {
-            if (text.equals("/start")) {
+            if (update.getMessage().hasContact()) {
+
+               Optional<Ketmon> byChatId = userRepository.findByChatId(userChatId);
+               user = byChatId.get();
+
+
+
+            } else if (text.equals("/start")) {
                 userMessage = "Xush kelibsiz!";
                 Optional<Ketmon> byChatId = userRepository.findByChatId(userChatId);
                 if (!byChatId.isPresent()) {
@@ -76,21 +84,30 @@ public class BaseBot extends TelegramLongPollingBot {
                             case "Ariza yuborish":
                                 userMessage = "Arizani to'ldirish";
                                 execute(userServiceBot.getRegionList(), null);
+                                user.setState(State.ARIZA);
                                 break;
                             case "Admin":
-                                userMessage = "Admin bo'lish parolni kiriting:";
-                                if (text.equals("0000")) {
-                                    user.setRole(Role.ROlE_ADMIN);
-                                    user.setState(State.ADMIN);
-                                } else {
-                                    menu();
-                                }
+                                userMessage = "raqam yuboring";
+                                execute(userServiceBot.addcontact(), null);
+                                user.setState(State.REG_ADMIN);
                                 break;
                         }
                         break;
+
                     case State.ARIZA:
+                        switch (text) {
+                            case "Ariza yuborish":
+                                userMessage = "Arizani to'ldirish";
+                                execute(userServiceBot.getRegionList(), null);
+                                user.setState(State.ARIZA);
+                        }
                         break;
                     case State.ADMIN:
+
+
+
+
+
                         break;
                 }
             }
@@ -134,5 +151,6 @@ public class BaseBot extends TelegramLongPollingBot {
         execute(replyKeyboardMarkup, null);
         return replyKeyboardMarkup;
     }
+
 
 }
