@@ -1,0 +1,1 @@
+insert into region(name)values ('SUPER_ADMIN');
