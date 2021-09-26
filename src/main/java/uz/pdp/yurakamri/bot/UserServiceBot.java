@@ -40,12 +40,16 @@ public class UserServiceBot {
         replyKeyboardMarkup.setKeyboard(keyboardRows);
         return replyKeyboardMarkup;
     }
-    public void getpassword() {
 
+    public ReplyKeyboardMarkup addadmin() {
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboardRows = new ArrayList<>();
 
+        KeyboardRow keyboardRow = new KeyboardRow();
+        keyboardRow.add(new KeyboardButton(""));
+        keyboardRows.add(keyboardRow);
 
-
-        return ;
+        replyKeyboardMarkup.setKeyboard(keyboardRows);
+        return replyKeyboardMarkup;
     }
-
 }
