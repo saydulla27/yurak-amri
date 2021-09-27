@@ -135,12 +135,12 @@ public class BaseBot extends TelegramLongPollingBot {
 
                         }
                     case State.REG_ADMIN_NAME:
-                       if (text.length()>2){
-                           Ketmon admin = new Ketmon();
-                           admin.setFullName(text);
-                           user.setState(State.REG_ADMIN_phone);
-                       }
-
+                        if (text.length() > 2) {
+                            Ketmon admin = new Ketmon();
+                            admin.setFullName(text);
+                            user.setState(State.REG_ADMIN_phone);
+                        }
+                        userRepository.save(user);
                 }
             }
 
