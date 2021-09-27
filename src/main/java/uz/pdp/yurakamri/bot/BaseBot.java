@@ -2,21 +2,16 @@ package uz.pdp.yurakamri.bot;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import uz.pdp.yurakamri.controller.RegionController;
 import uz.pdp.yurakamri.entity.Ketmon;
-import uz.pdp.yurakamri.entity.Region;
 import uz.pdp.yurakamri.entity.enums.Role;
-import uz.pdp.yurakamri.repository.RegionRepository;
 import uz.pdp.yurakamri.repository.UserRepository;
 
 import java.util.ArrayList;
@@ -55,48 +50,101 @@ public class BaseBot extends TelegramLongPollingBot {
         Ketmon user = null;
         userChatId = update.getMessage().getChatId();
         String text = update.getMessage().getText();
+
         if (update.hasMessage()) {
-            if (text.equals("/start")) {
+            if (update.getMessage().hasContact()) {
+                Optional<Ketmon> byChatId = userRepository.findByChatId(userChatId);
+                user = byChatId.get();
+                String state = user.getState();
+                Role role = user.getRole();
+                String admin_phone = user.getPhoneNumber();
+                String phone = update.getMessage().getContact().getPhoneNumber();
+
+
+//                switch (admin_phone) {
+//                    case phone:
+//                        userMessage = " salom iroda";
+//                        getpassword();
+//                        user.setState(State.ARIZA);
+//                        break;
+//                    case "+998338476311":
+//                        userMessage = "salom saydulla";
+//                        getpassword();
+//                        user.setState(State.REG_ADMIN);
+//                        break;
+            } else if (text.equals("/start")) {
                 userMessage = "Xush kelibsiz!";
                 Optional<Ketmon> byChatId = userRepository.findByChatId(userChatId);
                 if (!byChatId.isPresent()) {
                     Ketmon u1 = new Ketmon();
-                    u1.setChatId(userChatId);
-                    u1.setState(State.START);
+                    if (userChatId == 473156670) {
+                        u1.setRole(Role.ROLE_SUPER_ADMIN);
+                        u1.setChatId(userChatId);
+                        u1.setState(State.SUPERSTART);
+                        u1.setFullName("Muminov Saydulla");
+                        userMessage = "super admin";
+                        supermenyu();
+
+                    } else {
+                        u1.setChatId(userChatId);
+                        u1.setState(State.START);
+                        menu();
+                    }
                     userRepository.save(u1);
                 }
-                menu();
+
             } else {
                 Optional<Ketmon> byChatId = userRepository.findByChatId(userChatId);
                 user = byChatId.get();
                 String state = user.getState();
+                String role = String.valueOf(user.getRole());
                 switch (state) {
                     case State.START:
                         switch (text) {
                             case "Ariza yuborish":
                                 userMessage = "Arizani to'ldirish";
                                 execute(userServiceBot.getRegionList(), null);
+                                user.setState(State.ARIZA);
                                 break;
                             case "Admin":
-                                userMessage = "Admin bo'lish parolni kiriting:";
-                                if (text.equals("0000")) {
-                                    user.setRole(Role.ROlE_ADMIN);
-                                    user.setState(State.ADMIN);
-                                } else {
-                                    menu();
-                                }
+                                userMessage = "raqam yuboring";
+                                execute(userServiceBot.addcontact(), null);
+                                user.setState(State.REG_ADMIN);
                                 break;
                         }
                         break;
+
                     case State.ARIZA:
+                        switch (text) {
+                            case "Ariza yuborish":
+                                userMessage = "Arizani to'ldirish";
+                                execute(userServiceBot.getRegionList(), null);
+                                user.setState(State.ARIZA);
+                        }
                         break;
                     case State.ADMIN:
+
+
                         break;
+                    case State.SUPERSTART:
+                        switch (text) {
+                            case "admin qoshish":
+                                execute(null, null);
+                                userMessage = "ism yozing";
+                                user.setState(State.REG_ADMIN_NAME);
+
+                        }
+                    case State.REG_ADMIN_NAME:
+                        if (text.length() > 2) {
+                            Ketmon admin = new Ketmon();
+                            admin.setFullName(text);
+                            user.setState(State.REG_ADMIN_phone);
+                        }
+                        userRepository.save(user);
                 }
             }
 
         }
-
     }
 
     private void execute(ReplyKeyboardMarkup replyKeyboardMarkup,
@@ -135,4 +183,18 @@ public class BaseBot extends TelegramLongPollingBot {
         return replyKeyboardMarkup;
     }
 
+    public ReplyKeyboardMarkup supermenyu() {
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboardRows = new ArrayList<>();
+        KeyboardRow keyboardRow = new KeyboardRow();
+        KeyboardRow keyboardRow1 = new KeyboardRow();
+        keyboardRow.add("admin qoshish");
+        keyboardRow1.add("adminlar royhati");
+        keyboardRows.add(keyboardRow);
+        keyboardRows.add(keyboardRow1);
+        replyKeyboardMarkup.setKeyboard(keyboardRows);
+        execute(replyKeyboardMarkup, null);
+        return replyKeyboardMarkup;
+
+    }
 }
