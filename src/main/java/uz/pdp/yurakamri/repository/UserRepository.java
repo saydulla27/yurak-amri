@@ -9,5 +9,6 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<Ketmon, Integer> {
     Optional<Ketmon> findByChatId(long id);
+    Optional<Ketmon> findByPhoneNumber(String phone);
 
 }

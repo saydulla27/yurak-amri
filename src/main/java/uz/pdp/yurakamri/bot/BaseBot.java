@@ -53,25 +53,17 @@ public class BaseBot extends TelegramLongPollingBot {
 
         if (update.hasMessage()) {
             if (update.getMessage().hasContact()) {
-                Optional<Ketmon> byChatId = userRepository.findByChatId(userChatId);
-                user = byChatId.get();
-                String state = user.getState();
-                Role role = user.getRole();
-                String admin_phone = user.getPhoneNumber();
+
                 String phone = update.getMessage().getContact().getPhoneNumber();
+                Optional<Ketmon> optionalKetmon = userRepository.findByPhoneNumber(phone);
+                if (!optionalKetmon.isPresent()) {
+
+                    userMessage = "siz admin ";
+                    execute(null, null);
+
+                }
 
 
-//                switch (admin_phone) {
-//                    case phone:
-//                        userMessage = " salom iroda";
-//                        getpassword();
-//                        user.setState(State.ARIZA);
-//                        break;
-//                    case "+998338476311":
-//                        userMessage = "salom saydulla";
-//                        getpassword();
-//                        user.setState(State.REG_ADMIN);
-//                        break;
             } else if (text.equals("/start")) {
                 userMessage = "Xush kelibsiz!";
                 Optional<Ketmon> byChatId = userRepository.findByChatId(userChatId);
@@ -129,23 +121,23 @@ public class BaseBot extends TelegramLongPollingBot {
                     case State.SUPERSTART:
                         switch (text) {
                             case "admin qoshish":
-                                execute(null, null);
-                                userMessage = "ism yozing";
-                                user.setState(State.REG_ADMIN_NAME);
+                                Ketmon admin = new Ketmon();
+                                admin.setPhoneNumber(text);
+                                admin.setState(State.REG_ADMIN_phone);
+                                userRepository.save(admin);
+                                break;
+                        } case "malumot olish":
+                            execute(null,null);
+                            break;
 
-                        }
-                    case State.REG_ADMIN_NAME:
-                        if (text.length() > 2) {
-                            Ketmon admin = new Ketmon();
-                            admin.setFullName(text);
-                            user.setState(State.REG_ADMIN_phone);
-                        }
-                        userRepository.save(user);
+
                 }
+                userRepository.save(user);
             }
-
         }
+
     }
+
 
     private void execute(ReplyKeyboardMarkup replyKeyboardMarkup,
                          InlineKeyboardMarkup inlineKeyboardMarkup) {

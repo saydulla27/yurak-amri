@@ -1,1 +1,1 @@
-insert into region(name)values ('SUPER_ADMIN');
+insert into region(id,name)values (1,'SUPER_ADMIN');
