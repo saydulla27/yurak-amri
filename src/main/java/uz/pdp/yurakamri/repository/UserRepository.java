@@ -10,5 +10,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<Ketmon, Integer> {
     Optional<Ketmon> findByChatId(long id);
     Optional<Ketmon> findByPhoneNumber(String phone);
+    Optional<Ketmon> findByState(String state);
+
 
 }

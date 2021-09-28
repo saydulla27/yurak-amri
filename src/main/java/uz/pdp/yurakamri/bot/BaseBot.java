@@ -80,6 +80,7 @@ public class BaseBot extends TelegramLongPollingBot {
                     } else {
                         u1.setChatId(userChatId);
                         u1.setState(State.START);
+                        u1.setRole(Role.ROLE_USER);
                         menu();
                     }
                     userRepository.save(u1);
@@ -121,22 +122,39 @@ public class BaseBot extends TelegramLongPollingBot {
                     case State.SUPERSTART:
                         switch (text) {
                             case "admin qoshish":
+                                userMessage="tel nomer yozing";
                                 Ketmon admin = new Ketmon();
-                                admin.setPhoneNumber(text);
                                 admin.setState(State.REG_ADMIN_phone);
+                                admin.setRole(Role.ROlE_ADMIN);
                                 userRepository.save(admin);
+                                Optional<Ketmon> byChatId1 = userRepository.findByChatId(userChatId);
+                                byChatId1.get().setState(State.S_ADD_ADMIN);
+                                userRepository.save(byChatId1.get());
                                 break;
-                        } case "malumot olish":
-                            execute(null,null);
-                            break;
+                        }
+                    case "malumot olish":
+                        execute(null, null);
+                        break;
 
+                    case State.S_ADD_ADMIN:
+                        if (!text.isEmpty()) {
+                            Optional<Ketmon> byState = userRepository.findByState(State.REG_ADMIN_phone);
+                            byState.get().setPhoneNumber(text);
+                            userRepository.save(byState.get());
 
+                            byChatId.get().setState(State.S_ADD_ADMIN);
+                            userRepository.save(byChatId.get());
+                        }
                 }
-                userRepository.save(user);
+
             }
         }
 
     }
+
+
+
+
 
 
     private void execute(ReplyKeyboardMarkup replyKeyboardMarkup,

@@ -8,5 +8,6 @@ public interface State {
     String REG_ADMIN_NAME = "reg_admin_name";
     String REG_ADMIN_phone = "reg_admin_phone";
     String REG_ADMIN = "reg_admin";
+    String S_ADD_ADMIN = "s_add_admin";
     String SELECT_REGION = "region";
 }
