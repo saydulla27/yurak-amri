@@ -28,9 +28,9 @@ public class Ketmon {
     private String state, fullName, phoneNumber;
     private Integer age, childrenCount;
     private Float lat, lon;
+    private String password;
+    private String date;
 
-    @CreationTimestamp
-    private Date date;
 
     @OneToOne
     private Attachment attachment;
