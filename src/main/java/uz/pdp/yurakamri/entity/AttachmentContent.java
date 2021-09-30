@@ -11,6 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Data
 public class AttachmentContent {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
