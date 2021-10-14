@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import uz.pdp.yurakamri.entity.enums.HelpType;
 import uz.pdp.yurakamri.entity.enums.Role;
+import uz.pdp.yurakamri.entity.enums.Status;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -20,19 +21,23 @@ public class Ketmon {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     private long chatId;
+    private long buffer;
 
-    private String state, fullName, phoneNumber;
-    private Integer age, childrenCount;
+    private String state, fullName, age, phoneNumber;
+    private Integer childrenCount;
     private Float lat, lon;
     private String password;
     private String date;
+    private String status;
+    private String company;
+    private String region;
+    private String street_home;
+    private String description;
+    private String helpTypeList;
 
-
-    @OneToOne
-    private Attachment attachment;
 
 }
