@@ -72,7 +72,7 @@ public class UserServiceBot {
         List<Ketmon> all = userRepository.findByRole(Role.ROlE_ADMIN);
         for (Ketmon admin : all) {
             KeyboardRow keyboardRow = new KeyboardRow();
-            keyboardRow.add(new KeyboardButton(admin.getFullName()+" --> "+admin.getPhoneNumber()));
+            keyboardRow.add(new KeyboardButton(admin.getFullName() + " --> " + admin.getPhoneNumber()));
             keyboardRows.add(keyboardRow);
         }
         KeyboardRow keyboardRow1 = new KeyboardRow();
@@ -136,6 +136,7 @@ public class UserServiceBot {
         replyKeyboardMarkup.setKeyboard(keyboardRows);
         return replyKeyboardMarkup;
     }
+
     public ReplyKeyboardMarkup addlocation() {
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboardRows = new ArrayList<>();
@@ -167,6 +168,7 @@ public class UserServiceBot {
         replyKeyboardMarkup.setKeyboard(keyboardRows);
         return replyKeyboardMarkup;
     }
+
     public ReplyKeyboardMarkup getfinish() {
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboardRows = new ArrayList<>();
@@ -174,6 +176,34 @@ public class UserServiceBot {
         KeyboardRow keyboardRow1 = new KeyboardRow();
         keyboardRow.add("Saqlash");
         keyboardRow1.add("qoshimcha malumot kiritish");
+        keyboardRows.add(keyboardRow);
+        keyboardRows.add(keyboardRow1);
+        replyKeyboardMarkup.setKeyboard(keyboardRows);
+        return replyKeyboardMarkup;
+    }
+
+    public ReplyKeyboardMarkup help_1() {
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboardRows = new ArrayList<>();
+        KeyboardRow keyboardRow = new KeyboardRow();
+        KeyboardRow keyboardRow1 = new KeyboardRow();
+        keyboardRow.add("O`zimga");
+        keyboardRow1.add("Boshqa insonga");
+        keyboardRows.add(keyboardRow);
+        keyboardRows.add(keyboardRow1);
+        replyKeyboardMarkup.setKeyboard(keyboardRows);
+        return replyKeyboardMarkup;
+    }
+
+    public ReplyKeyboardMarkup info_man() {
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboardRows = new ArrayList<>();
+        KeyboardRow keyboardRow = new KeyboardRow();
+        KeyboardRow keyboardRow1 = new KeyboardRow();
+        keyboardRow.add("Vafot etgan");
+        keyboardRow.add("Ajrashganman");
+        keyboardRow1.add("Tashlab ketgan");
+        keyboardRow1.add("Nogiron");
         keyboardRows.add(keyboardRow);
         keyboardRows.add(keyboardRow1);
         replyKeyboardMarkup.setKeyboard(keyboardRows);

@@ -97,13 +97,18 @@ public class BaseBot extends TelegramLongPollingBot {
                     String state = user.getState();
 
                     switch (state) {
-
                         case State.START:
                             switch (text) {
-                                case "Ariza yuborish":
-                                    userMessage = "Arizani to'ldirish";
-                                    execute(userServiceBot.getRegionList(), null);
+                                case "Yordam berish":
+                                    userMessage = "raxmat";
+                                    execute(null, null);
                                     user.setState(State.ARIZA);
+                                    userRepository.save(user);
+                                    break;
+                                case "Yordam sorash":
+                                    userMessage = "Yordam kimga kerak";
+                                    execute(userServiceBot.help_1(), null);
+                                    user.setState(State.U_HELP);
                                     userRepository.save(user);
                                     break;
                                 case "Admin":
@@ -115,15 +120,86 @@ public class BaseBot extends TelegramLongPollingBot {
                                     break;
                             }
                             break;
-
-                        case State.ARIZA:
+                        case State.SUPERSTART:
                             switch (text) {
-                                case "Ariza yuborish":
-                                    userMessage = "Arizani to'ldirish";
-                                    execute(userServiceBot.getRegionList(), null);
-                                    user.setState(State.ARIZA);
+                                case "admin qoshish":
+                                    Ketmon admin = new Ketmon();
+                                    admin.setState(State.REG_ADMIN_phone);
+                                    admin.setRole(Role.ROlE_ADMIN);
+                                    userRepository.save(admin);
+                                    user.setState(State.S_ADD_ADMIN);
+                                    userRepository.save(user);
+                                    userMessage = "raqam yozing";
+                                    execute(null, null);
+                                    break;
+
+
+                                case "admin o`chirish":
+                                    userMessage = "o`chadigan adminnni tanlang";
+                                    user.setState(State.DELETE_ADMIN_1);
+                                    userRepository.save(user);
+                                    execute(userServiceBot.delateadmins(), null);
+                                    break;
+
+                                case "adminlar royhati":
+                                    user.setState(State.SUPERSTART);
+                                    userMessage = "royxat";
+                                    userRepository.save(user);
+                                    execute(userServiceBot.getadmins(), null);
+                                    break;
+
+                                case "menyuga qaytish":
+
+                                    supermenyu();
+                                    break;
                             }
                             break;
+
+                        case State.S_ADD_ADMIN:
+                            if (!text.isEmpty()) {
+                                Optional<Ketmon> byState = userRepository.findByState(State.REG_ADMIN_phone);
+                                byState.get().setPhoneNumber(text);
+                                byState.get().setState(State.REG_ADMIN_phone_1);
+                                userRepository.save(byState.get());
+                                user.setState(State.S_ADD_ADMIN_NAME);
+                                userRepository.save(user);
+                                userMessage = "Ismini kiriting";
+                                execute(null, null);
+                            }
+                            break;
+
+                        case State.S_ADD_ADMIN_NAME:
+                            if (!text.isEmpty()) {
+                                Optional<Ketmon> byState = userRepository.findByState(State.REG_ADMIN_phone_1);
+                                byState.get().setFullName(text);
+                                byState.get().setState(State.REG_ADMIN_ok);
+                                userRepository.save(byState.get());
+                                user.setState(State.SUPERSTART);
+                                userRepository.save(user);
+                                userMessage = "ok";
+                            }
+                            supermenyu();
+                            break;
+
+
+                        case State.DELETE_ADMIN_1:
+                            if (!text.isEmpty()) {
+                                if (text.equals("menyuga qaytish")) {
+                                    user.setState(State.SUPERSTART);
+                                    userRepository.save(user);
+                                    userMessage = "menyuga qaytish";
+                                    supermenyu();
+                                } else
+                                    user.setState(State.SUPERSTART);
+                                userRepository.save(user);
+                                Optional<Ketmon> byPhoneNumber = userRepository.findByPhoneNumber(text);
+                                userRepository.delete(byPhoneNumber.get());
+                                userMessage = "bu admin tugadi";
+                                supermenyu();
+
+                            }
+                            break;
+
                         case State.START_ADMIN:
                             switch (text) {
                                 case "Royhatga olish":
@@ -137,6 +213,7 @@ public class BaseBot extends TelegramLongPollingBot {
 
 
                                     break;
+
                             }
                             break;
                         case State.A_REG_PHONE:
@@ -206,88 +283,6 @@ public class BaseBot extends TelegramLongPollingBot {
                             }
                             break;
 
-                        case State.SUPERSTART:
-                            switch (text) {
-                                case "admin qoshish":
-                                    Ketmon admin = new Ketmon();
-                                    admin.setState(State.REG_ADMIN_phone);
-                                    admin.setRole(Role.ROlE_ADMIN);
-                                    userRepository.save(admin);
-                                    user.setState(State.S_ADD_ADMIN);
-                                    userRepository.save(user);
-                                    userMessage = "raqam yozing";
-                                    execute(null, null);
-                                    break;
-
-
-                                case "admin o`chirish":
-                                    userMessage = "o`chadigan adminnni tanlang";
-                                    user.setState(State.DELETE_ADMIN_1);
-                                    userRepository.save(user);
-                                    execute(userServiceBot.delateadmins(), null);
-
-
-                                    break;
-
-                                case "adminlar royhati":
-                                    user.setState(State.SUPERSTART);
-                                    userMessage = "royxat";
-                                    userRepository.save(user);
-                                    execute(userServiceBot.getadmins(), null);
-                                    break;
-
-                                case "menyuga qaytish":
-
-                                    supermenyu();
-                                    break;
-                            }
-                            break;
-
-                        case State.S_ADD_ADMIN:
-                            if (!text.isEmpty()) {
-                                Optional<Ketmon> byState = userRepository.findByState(State.REG_ADMIN_phone);
-                                byState.get().setPhoneNumber(text);
-                                byState.get().setState(State.REG_ADMIN_phone_1);
-                                userRepository.save(byState.get());
-                                user.setState(State.S_ADD_ADMIN_NAME);
-                                userRepository.save(user);
-                                userMessage = "Ismini kiriting";
-                                execute(null, null);
-                            }
-                            break;
-
-                        case State.S_ADD_ADMIN_NAME:
-                            if (!text.isEmpty()) {
-                                Optional<Ketmon> byState = userRepository.findByState(State.REG_ADMIN_phone_1);
-                                byState.get().setFullName(text);
-                                byState.get().setState(State.REG_ADMIN_ok);
-                                userRepository.save(byState.get());
-                                user.setState(State.SUPERSTART);
-                                userRepository.save(user);
-                                userMessage = "ok";
-                            }
-                            supermenyu();
-                            break;
-
-
-                        case State.DELETE_ADMIN_1:
-                            if (!text.isEmpty()) {
-                                if (text.equals("menyuga qaytish")) {
-                                    user.setState(State.SUPERSTART);
-                                    userRepository.save(user);
-                                    userMessage = "menyuga qaytish";
-                                    supermenyu();
-                                } else
-                                    user.setState(State.SUPERSTART);
-                                userRepository.save(user);
-                                Optional<Ketmon> byPhoneNumber = userRepository.findByPhoneNumber(text);
-                                userRepository.delete(byPhoneNumber.get());
-                                userMessage = "bu admin tugadi";
-                                supermenyu();
-
-                            }
-                            break;
-
                         case State.A_REG_HELPLIST:
                             if (!text.isEmpty()) {
                                 byBuffer.get().setHelpTypeList(text);
@@ -320,7 +315,7 @@ public class BaseBot extends TelegramLongPollingBot {
                             }
                             break;
                         case State.A_REG_FINISHAND:
-                            if (!text.isEmpty()){
+                            if (!text.isEmpty()) {
                                 byBuffer.get().setDescription(text);
                                 byBuffer.get().setBuffer(0);
                                 userRepository.save(byBuffer.get());
@@ -332,12 +327,73 @@ public class BaseBot extends TelegramLongPollingBot {
 
                             }
                             break;
+                        case State.U_HELP:
+                            switch (text) {
+                                case "O`zimga":
+                                    userMessage = "Shaxar yoki Tumaningiz";
+                                    execute(userServiceBot.getRegionList(), null);
+                                    user.setState(State.U_HELP_1);
+                                    user.setWhom(text);
+                                    userRepository.save(user);
+                                    break;
+                                case "Boshqa insonga":
+                                    userMessage = "Shaxar yoki Tumani";
+                                    execute(userServiceBot.getRegionList(), null);
+                                    user.setState(State.U_HELP_1);
+                                    user.setWhom(text);
+                                    userRepository.save(user);
+                                    break;
+
+                            }
+                            break;
+
+                        case State.U_HELP_1:
+                            if (!text.isEmpty()) {
+                                userMessage = "Ism Familya kiriting";
+                                user.setState(State.U_HELP_2);
+                                user.setRegion(text);
+                                userRepository.save(user);
+                                execute(null, null);
+                            } break;
+                        case State.U_HELP_2:
+                            if (!text.isEmpty()) {
+                                user.setState(State.U_HELP_3);
+                                user.setFullName(text);
+                                userRepository.save(user);
+                                userMessage = "Yashash manzilingizni kiriting";
+                                execute(null, null);
+                            }break;
+                        case State.U_HELP_3:
+                            if (!text.isEmpty()) {
+                                user.setState(State.U_HELP_4);
+                                user.setStreet_home(text);
+                                userRepository.save(user);
+                                userMessage = "Yoshingizni kiriting (faqat yoshingiz) ";
+                                execute(null, null);
+                            }break;
+                        case State.U_HELP_4:
+                            if (!text.isEmpty()) {
+                                userMessage = "Turmush o`rtogingiz haqida malumot";
+                                execute(userServiceBot.info_man(), null);
+                                user.setState(State.U_HELP_5);
+                                user.setAge(text);
+                                userRepository.save(user);
+                            }break;
+                        case State.U_HELP_5:
+                            if (!text.isEmpty()) {
+                                user.setState(State.U_HELP_6);
+                                user.setInfo_man(text);
+                                userMessage = "Voyaga yetmagan farzandlar soni";
+                                execute(userServiceBot.addchild(), null);
+                                userRepository.save(user);
+                            }break;
 
                     }
                 }
 
 
             }
+
             if (update.getMessage().hasContact()) {
                 String phone = update.getMessage().getContact().getPhoneNumber();
                 Optional<Ketmon> optionalKetmon = userRepository.findByPhoneNumber(phone);
@@ -420,26 +476,18 @@ public class BaseBot extends TelegramLongPollingBot {
     }
 
 
-    public SendMessage regphone(Update update) {
-        String text = update.getMessage().getText();
-        Long chatId = update.getMessage().getChatId();
-        SendMessage sendMessage = new SendMessage()
-                .setChatId(chatId);
-        sendMessage.setText("Tel raqam kiriting ");
-
-
-        return sendMessage;
-    }
-
     public ReplyKeyboardMarkup menu() {
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboardRows = new ArrayList<>();
         KeyboardRow keyboardRow = new KeyboardRow();
         KeyboardRow keyboardRow1 = new KeyboardRow();
-//        keyboardRow.add("Ariza yuborish");
-        keyboardRow1.add("Admin");
+        KeyboardRow keyboardRow2 = new KeyboardRow();
+        keyboardRow.add("Yordam berish");
+        keyboardRow1.add("Yordam sorash");
+        keyboardRow2.add("Admin");
         keyboardRows.add(keyboardRow);
         keyboardRows.add(keyboardRow1);
+        keyboardRows.add(keyboardRow2);
         replyKeyboardMarkup.setKeyboard(keyboardRows);
         execute(replyKeyboardMarkup, null);
         return replyKeyboardMarkup;

@@ -20,10 +20,20 @@ public interface State {
     String A_REG_LOCATION = "a_reg_location";
     String A_REG_PHONE = "a_reg_phone";
     String A_REG_STREET = "a_reg_street";
+    String A_REG_MAN = "a_reg_man";
     String A_REG_HELP = "a_reg_help";
     String A_REG_HELPLIST = "a_reg_helplist";
     String A_REG_FINISH = "a_reg_finish";
     String A_REG_FINISHAND = "a_reg_finishand";
+
+
+    String U_HELP = "u_help";
+    String U_HELP_1 = "u_help_1";
+    String U_HELP_2 = "u_help_2";
+    String U_HELP_3 = "u_help_3";
+    String U_HELP_4 = "u_help_4";
+    String U_HELP_5 = "u_help_5";
+    String U_HELP_6 = "u_help_6";
 
 
 

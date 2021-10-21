@@ -38,6 +38,8 @@ public class Ketmon {
     private String street_home;
     private String description;
     private String helpTypeList;
+    private String whom;
+    private String info_man;
 
 
 }

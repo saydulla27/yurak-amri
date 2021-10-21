@@ -18,9 +18,8 @@ public interface UserRepository extends JpaRepository<Ketmon, Integer> {
 
     List<Ketmon> findByRole(Role role);
 
-
-
     Optional<Ketmon> findByBuffer(Long buffer);
 
+    Optional<Ketmon> findByRegion(String region);
 
 }
