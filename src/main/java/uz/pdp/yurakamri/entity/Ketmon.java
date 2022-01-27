@@ -1,15 +1,12 @@
 package uz.pdp.yurakamri.entity;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import uz.pdp.yurakamri.entity.enums.HelpType;
 import uz.pdp.yurakamri.entity.enums.Role;
-import uz.pdp.yurakamri.entity.enums.Status;
 
 import javax.persistence.*;
-import java.util.Date;
 import java.util.List;
 
 @Entity(name = "users")
@@ -28,18 +25,40 @@ public class Ketmon {
     private long buffer;
 
     private String state, fullName, age, phoneNumber;
-    private Integer childrenCount;
+    private String childrenInfo;
     private Float lat, lon;
     private String password;
-    private String date;
-    private String status;
+    private boolean status;
+    private boolean blacklist;
     private String company;
-    private String region;
+    private String city;
+    private String rayon;
     private String street_home;
     private String description;
-    private String helpTypeList;
     private String whom;
     private String info_man;
+    private String username;
+
+
+    @OneToMany(mappedBy = "users",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<ChildList> helpLists;
+
+
+    @OneToMany(mappedBy = "users",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<HelpAndUsers> helpAndUsers;
+
+
+    @OneToMany(mappedBy = "users",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<Passport> passports;
+
+
+    @OneToMany(mappedBy = "users",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<RequestUsers> requestUsers;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Region region;
+
+
 
 
 }

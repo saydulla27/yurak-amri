@@ -3,7 +3,6 @@ package uz.pdp.yurakamri.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import uz.pdp.yurakamri.entity.Region;
-import uz.pdp.yurakamri.payload.ApiResponse;
 import uz.pdp.yurakamri.repository.RegionRepository;
 
 import java.util.List;
