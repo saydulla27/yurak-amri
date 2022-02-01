@@ -2,7 +2,7 @@ package uz.pdp.yurakamri.bot;
 
 public interface State {
     String START = "start";
-    String ARIZA = "ariza";
+
     String SUPERSTART = "super_start";
     String REG_ADMIN_ok = "reg_admin_ok";
     String REG_ADMIN_phone = "reg_admin_phone";
@@ -27,14 +27,15 @@ public interface State {
     String A_REG_HELP_2 = "a_reg_help_2";
     String A_REG_HELP_3 = "a_reg_help_3";
 
-    String A_REG_HELPLIST = "a_reg_helplist";
+
+
     String A_REG_FINISH = "a_reg_finish";
     String A_REG_FINISHAND = "a_reg_finishand";
     String A_REG_FOTO = "a_reg_foto";
     String A_REG_pasport = "a_reg_pasport";
 
 
-    String U_HELP = "u_help";
+
     String U_HELP_0 = "u_help_0";
     String U_HELP_1 = "u_help_1";
     String U_HELP_2 = "u_help_2";
@@ -45,16 +46,30 @@ public interface State {
     String U_HELP_7 = "u_help_7";
     String U_HELP_8 = "u_help_8";
     String U_HELP_9 = "u_help_9";
-    String U_HELP_10 = "u_help_10";
-    String U_HELP_11 = "u_help_11";
+
+
     String U_HELP_phone = "u_help_phone";
 
 
     String A_Answer = "A_Answer";
     String A_Answer_1 = "A_Answer_1";
+
+
     String A_Answer_2 = "A_Answer_2";
     String A_Answer_3 = "A_Answer_3";
-    String A_Answer_4 = "A_Answer_4";
+
+    String Find = "find";
+    String Find_1 = "find_1";
+    String Find_2 = "find_2";
+    String Find_3 = "find_3";
+    String Find_4 = "find_4";
+    String Find_5 = "find_5";
+
+
+
+
+
+
 
 
 

@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface HelpAndUserRepository extends JpaRepository<HelpAndUsers, Integer> {
     Optional<HelpAndUsers> findByBuffer(Long chatid);
-    Optional<HelpAndUsers> findByUsers(Ketmon user);
+    List<HelpAndUsers> findByUsers(Ketmon user);
 
 
 

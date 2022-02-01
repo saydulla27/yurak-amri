@@ -19,7 +19,7 @@ public class RequestUsers {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private long buffer;
+    private String admin;
 
     @Enumerated(EnumType.STRING)
     private HelpType helpType;
@@ -29,6 +29,7 @@ public class RequestUsers {
     private boolean status;
     private boolean answer;
     private boolean active;
+    private boolean food;
 
 
 

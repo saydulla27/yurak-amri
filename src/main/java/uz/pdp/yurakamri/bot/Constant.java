@@ -20,13 +20,38 @@ public interface Constant {
     String Arizalar = "Arizalar";
     String YordamOlganlar = "Yordam olganlar";
     String Qidirish = "Qidirish";
-    String Malumotlar = "Malumotlar";
+    String Malumotlar = "Hisobot";
     String ArizalarBilanIshlash = "Arizalar bilan ishlash";
 
     String Oziq = "(oziq)";
     String Rad = "(rad)";
-    String Aloqa = "(aloqa)";
-    String Black = "(black)";
+
+
+    String xa = "(xa)";
+    String yoq = "(yoq)";
+
+    String ism = "(ism)";
+
+
+    String yordam = "(yordam)";
+    String hujjat = "(hujjat)";
+    String LocatsiyaOFF = "(locationOff)";
+    String LocatsiyaON = "(locationOn)";
+    String bekor = "(bekor)";
+    String blacklist = "(black)";
+    String whitelist = "(white)";
+
+    String inlineBACK = "(back)";
+
+
+    String ismFamilya = "Ism Familya";
+    String Ariza_raqami = "Ariza raqami";
+    String Tel_nomer = "Telefon raqam";
+    String Child = "Bolalar soni";
+
+
+
+
 
 
 

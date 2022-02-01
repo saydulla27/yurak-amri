@@ -35,7 +35,6 @@ public class Ketmon {
     private String rayon;
     private String street_home;
     private String description;
-    private String whom;
     private String info_man;
     private String username;
 

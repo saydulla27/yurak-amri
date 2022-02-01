@@ -45,14 +45,15 @@ public class UserServiceBot {
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboardRows = new ArrayList<>();
         List<Region> all = regionRepository.findAll();
+        KeyboardRow keyboardRow1 = new KeyboardRow();
+        keyboardRow1.add(Constant.Back);
+        keyboardRows.add(keyboardRow1);
         for (Region region : all) {
             KeyboardRow keyboardRow = new KeyboardRow();
             keyboardRow.add(new KeyboardButton(region.getName()));
             keyboardRows.add(keyboardRow);
         }
-        KeyboardRow keyboardRow1 = new KeyboardRow();
-        keyboardRow1.add(Constant.Back);
-        keyboardRows.add(keyboardRow1);
+
         replyKeyboardMarkup.setKeyboard(keyboardRows);
         return replyKeyboardMarkup;
     }
@@ -62,7 +63,7 @@ public class UserServiceBot {
         List<KeyboardRow> keyboardRows = new ArrayList<>();
         List<Region> all = regionRepository.findAll();
         for (Region region : all) {
-            List<RequestUsers> byAnswer = requestUsersRepository.findByAnswerAndRegion_Name(false, region.getName());
+            List<RequestUsers> byAnswer = requestUsersRepository.findByAnswerAndFoodAndRegion_Name(false,false, region.getName());
             if (byAnswer.size()!=0) {
                 String size = String.valueOf(byAnswer.size());
                 KeyboardRow keyboardRow = new KeyboardRow();
@@ -85,14 +86,16 @@ public class UserServiceBot {
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboardRows = new ArrayList<>();
         List<City> all = cityRepository.findByRegion_Name(city);
+        KeyboardRow keyboardRow1 = new KeyboardRow();
+        keyboardRow1.add(Constant.Back);
+        keyboardRows.add(keyboardRow1);
+
         for (City city1 : all) {
             KeyboardRow keyboardRow = new KeyboardRow();
             keyboardRow.add(new KeyboardButton(city1.getName()));
             keyboardRows.add(keyboardRow);
         }
-        KeyboardRow keyboardRow1 = new KeyboardRow();
-        keyboardRow1.add(Constant.Back);
-        keyboardRows.add(keyboardRow1);
+
         replyKeyboardMarkup.setKeyboard(keyboardRows);
         return replyKeyboardMarkup;
     }
@@ -197,6 +200,26 @@ public class UserServiceBot {
         replyKeyboardMarkup.setKeyboard(keyboardRows);
         return replyKeyboardMarkup;
     }
+    public ReplyKeyboardMarkup find_list() {
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboardRows = new ArrayList<>();
+        KeyboardRow keyboardRow = new KeyboardRow();
+        KeyboardRow keyboardRow1 = new KeyboardRow();
+        KeyboardRow keyboardRow2 = new KeyboardRow();
+
+        keyboardRow.add(Constant.ismFamilya);
+        keyboardRow.add(Constant.Ariza_raqami);
+        keyboardRow1.add(Constant.Tel_nomer);
+        keyboardRow1.add(Constant.Child);
+        keyboardRow2.add(Constant.Back);
+
+        keyboardRows.add(keyboardRow);
+        keyboardRows.add(keyboardRow1);
+        keyboardRows.add(keyboardRow2);
+
+        replyKeyboardMarkup.setKeyboard(keyboardRows);
+        return replyKeyboardMarkup;
+    }
 
     public ReplyKeyboardMarkup addchildage() {
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
@@ -266,21 +289,17 @@ public class UserServiceBot {
         KeyboardRow keyboardRow = new KeyboardRow();
         KeyboardRow keyboardRow1 = new KeyboardRow();
         KeyboardRow keyboardRow2 = new KeyboardRow();
-        KeyboardRow keyboardRow3 = new KeyboardRow();
-        KeyboardRow keyboardRow4 = new KeyboardRow();
-        KeyboardRow keyboardRow5 = new KeyboardRow();
+
         keyboardRow.add("Rasm yuklash \uD83D\uDCF8");
-        keyboardRow1.add("Hujjatlar yuklash");
-        keyboardRow2.add("Qöshimcha malumot kiritish  ✏️");
-        keyboardRow3.add(new KeyboardButton("locatsiya yuborish  \uD83D\uDCCD").setRequestLocation(true));
-        keyboardRow4.add("Saqlash ✅");
-        keyboardRow5.add("Bekor qilish ❎");
+        keyboardRow.add("Hujjatlar yuklash");
+        keyboardRow1.add("Qöshimcha kiritish  ✏️");
+        keyboardRow1.add(new KeyboardButton("locatsiya olish  \uD83D\uDCCD").setRequestLocation(true));
+        keyboardRow2.add("Saqlash ✅");
+        keyboardRow2.add("Bekor qilish ❎");
         keyboardRows.add(keyboardRow);
         keyboardRows.add(keyboardRow1);
         keyboardRows.add(keyboardRow2);
-        keyboardRows.add(keyboardRow3);
-        keyboardRows.add(keyboardRow4);
-        keyboardRows.add(keyboardRow5);
+
         replyKeyboardMarkup.setKeyboard(keyboardRows);
         return replyKeyboardMarkup;
     }

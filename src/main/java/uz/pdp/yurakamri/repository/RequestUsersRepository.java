@@ -13,11 +13,13 @@ import java.util.Optional;
 
 @Repository
 public interface RequestUsersRepository extends JpaRepository<RequestUsers, Integer> {
-    Optional<RequestUsers> findByBuffer(Long chatid);
+
     Optional<RequestUsers> findByUsersAndActive (Ketmon user,boolean active);
     List<RequestUsers> findByUsers (Ketmon user);
-    List<RequestUsers> findByAnswerAndRegion_Name (boolean answer, String region);
+    List<RequestUsers> findByAnswerAndFoodAndRegion_Name (boolean answer,boolean food, String region);
     List<RequestUsers> findByStatus (boolean status);
     List<RequestUsers> findByAnswer (boolean answer);
+    List<RequestUsers> findByFoodAndStatusAndAdmin (boolean answer,boolean status,String admin);
+
 
 }

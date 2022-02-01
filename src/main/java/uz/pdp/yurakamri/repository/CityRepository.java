@@ -6,11 +6,13 @@ import uz.pdp.yurakamri.entity.City;
 import uz.pdp.yurakamri.entity.Region;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CityRepository extends JpaRepository<City, Integer> {
 
     List<City> findByRegion_Name (String region);
+    Optional<City> findByName (String city);
 
 
 }

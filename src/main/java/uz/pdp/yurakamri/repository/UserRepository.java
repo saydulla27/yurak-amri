@@ -11,6 +11,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<Ketmon, Integer> {
     Optional<Ketmon> findByChatId(long id);
+    Optional<Ketmon> findById(Integer id);
 
     Optional<Ketmon> findByPhoneNumber(String phone);
 
@@ -21,5 +22,9 @@ public interface UserRepository extends JpaRepository<Ketmon, Integer> {
     Optional<Ketmon> findByBuffer(Long buffer);
 
     Optional<Ketmon> findByRegion(String region);
+
+    List<Ketmon> findByRoleAndFullNameContainingIgnoreCase (Role role, String name);
+
+
 
 }
