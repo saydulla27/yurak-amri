@@ -35,7 +35,16 @@ public class Dataloder implements CommandLineRunner {
         user.setPhoneNumber("998917706311");
         user.setRole(Role.ROlE_ADMIN);
         user.setFullName("Sadi");
+        user.setPassword("1");
         userRepository.save(user);
+
+        Ketmon user1 = new Ketmon();
+        user1.setPhoneNumber("998974340710");
+        user1.setRole(Role.ROlE_ADMIN);
+        user1.setFullName("Abduraxmon");
+        userRepository.save(user1);
+
+
 
 
 

@@ -1,5 +1,6 @@
 package uz.pdp.yurakamri.bot;
 
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,7 @@ import uz.pdp.yurakamri.entity.*;
 import uz.pdp.yurakamri.entity.enums.HelpType;
 import uz.pdp.yurakamri.entity.enums.Role;
 import uz.pdp.yurakamri.repository.*;
+import uz.pdp.yurakamri.service.Excell;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -78,6 +80,7 @@ public class BaseBot extends TelegramLongPollingBot {
         return botToken;
     }
 
+    @SneakyThrows
     @Override
     public void onUpdateReceived(Update update) {
         Date date = Calendar.getInstance().getTime();
@@ -104,7 +107,6 @@ public class BaseBot extends TelegramLongPollingBot {
                             u1.setState(State.SUPERSTART);
                             u1.setFullName("Muminov Saydulla");
                             u1.setPhoneNumber("+998338476311");
-                            u1.setCompany("Yurak Amri");
                             userMessage = "super admin";
                             supermenyu();
 
@@ -265,7 +267,7 @@ public class BaseBot extends TelegramLongPollingBot {
 
                             case State.START_ADMIN:
                                 switch (text) {
-                                    case "Röyhatga olish":
+                                    case Constant.Royhatga_olish:
                                         user.setState(State.A_REG_PHONE);
                                         userRepository.save(user);
                                         userMessage = "Telefon raqamini kiriting +998XXXXXXXXX ";
@@ -299,9 +301,19 @@ public class BaseBot extends TelegramLongPollingBot {
                                         userMessage = "Nima böyicha qidiramiz";
                                         execute(userServiceBot.find_list(), null);
                                         break;
-                                    case Constant.YordamOlganlar:
-                                        break;
+
                                     case Constant.Malumotlar:
+                                        List<HelpAndUsers> byAdminAndDate = helpAndUserRepository.findByAdminAndDate(user.getFullName(), strDate);
+                                        if (byAdminAndDate.size() != 0) {
+                                            send_adminHisobot(byAdminAndDate, strDate);
+                                            userMessage = "hisobot";
+                                            Excell excell = new Excell(byAdminAndDate);
+                                            excell.export("sadi");
+                                            execute(userServiceBot.adduser(), null);
+                                            break;
+                                        } else send_messega_standart(userChatId, "Bugun ehson berilmadi");
+                                        userMessage = "♨️";
+                                        execute(userServiceBot.adduser(), null);
                                         break;
 
                                 }
@@ -316,10 +328,17 @@ public class BaseBot extends TelegramLongPollingBot {
                                         execute(userServiceBot.back(), null);
                                         break;
                                     case Constant.Tel_nomer:
+                                        userMessage = "Telefon raqamini kiriting ";
+                                        user.setState(State.Find_4);
+                                        userRepository.save(user);
+                                        execute(userServiceBot.back(), null);
                                         break;
-                                    case Constant.Child:
-                                        break;
+
                                     case Constant.Ariza_raqami:
+                                        userMessage = "Ariza raqamini kiriting (Faqat raqamlarda)";
+                                        user.setState(State.Find_5);
+                                        userRepository.save(user);
+                                        execute(userServiceBot.back(), null);
                                         break;
                                     case Constant.Back:
                                         user.setState(State.START_ADMIN);
@@ -338,7 +357,7 @@ public class BaseBot extends TelegramLongPollingBot {
                                 if (ketmonList.size() != 0) {
                                     user.setState(State.Find_2);
                                     userRepository.save(user);
-                                    send_findName(text);
+                                    send_findName(ketmonList, text);
                                     break;
                                 }
                                 if (text.equals(Constant.Back)) {
@@ -350,6 +369,42 @@ public class BaseBot extends TelegramLongPollingBot {
                                 } else send_messega_standart(userChatId, "Bunday odam yöq");
                                 break;
 
+                            case State.Find_4:
+                                List<Ketmon> phoneList = userRepository.findByRoleAndPhoneNumberContainingIgnoreCase(Role.ROLE_MUHLIS, text);
+                                if (phoneList.size() != 0) {
+                                    user.setState(State.Find_2);
+                                    userRepository.save(user);
+                                    send_findName(phoneList, text);
+                                    break;
+                                }
+                                if (text.equals(Constant.Back)) {
+                                    user.setState(State.START_ADMIN);
+                                    userRepository.save(user);
+                                    userMessage = "nima qilamiz ";
+                                    execute(userServiceBot.adduser(), null);
+                                    break;
+                                } else send_messega_standart(userChatId, "Bunday odam yöq");
+                                break;
+                            case State.Find_5:
+                                if (text.equals(Constant.Back)) {
+                                    user.setState(State.START_ADMIN);
+                                    userRepository.save(user);
+                                    userMessage = "nima qilamiz ";
+                                    execute(userServiceBot.adduser(), null);
+                                    break;
+                                }
+                                Optional<RequestUsers> byId = requestUsersRepository.findById(Integer.valueOf(text));
+                                if (byId.isPresent()) {
+                                    Optional<Ketmon> arizalist = userRepository.findById(byId.get().getUsers().getId());
+                                    if (arizalist.isPresent()) {
+                                        user.setState(State.Find_2);
+                                        userRepository.save(user);
+                                        send_findId(arizalist.get(), Integer.valueOf(text));
+                                        break;
+                                    } else send_messega_standart(userChatId, "Bunday inson mavjud emas");
+                                    break;
+                                } else send_messega_standart(userChatId, "Bunday raqamli ariza mavjud emas");
+                                break;
                             case State.Find_2:
                                 if (text.equals(Constant.Back)) {
                                     user.setState(State.START_ADMIN);
@@ -368,6 +423,7 @@ public class BaseBot extends TelegramLongPollingBot {
                                     break;
                                 } else send_messega_standart(userChatId, "Tugmalardan foydalaning");
                                 break;
+
 
                             case State.A_Answer:
                                 if (!text.isEmpty()) {
@@ -649,6 +705,13 @@ public class BaseBot extends TelegramLongPollingBot {
                                         execute(userServiceBot.gethelplist(), null);
                                         break;
                                     case Constant.YAKUNLASH:
+                                        List<ChildList> childLists = childListRepository.findAllByUsers(byBuffer.get());
+                                        StringBuilder stringBuilder = new StringBuilder();
+                                        for (ChildList list : childLists) {
+                                            stringBuilder.append(list.getAge()+", ");
+                                        }
+                                        byBuffer.get().setChildAge(String.valueOf(stringBuilder));
+                                        userRepository.save(byBuffer.get());
                                         user.setState(State.A_REG_HELP_3);
                                         userRepository.save(user);
                                         userMessage = "Qanday yordam körsatildi";
@@ -971,6 +1034,12 @@ public class BaseBot extends TelegramLongPollingBot {
                                         execute(null, null);
                                         break;
                                     case Constant.YAKUNLASH:
+                                        List<ChildList> childLists = childListRepository.findAllByUsers(user);
+                                        StringBuilder stringBuilder = new StringBuilder();
+                                        for (ChildList list : childLists) {
+                                            stringBuilder.append(list.getAge()+", ");
+                                        }
+                                        user.setChildAge(String.valueOf(stringBuilder));
                                         user.setState(State.U_HELP_phone);
                                         userRepository.save(user);
                                         userMessage = "Telefon raqamingizni kiriting : (+998... körinishida)";
@@ -1062,7 +1131,7 @@ public class BaseBot extends TelegramLongPollingBot {
                                 requestUsers.setRegion(user.getRegion());
                                 requestUsers.setDate(strDate);
                                 requestUsersRepository.save(requestUsers);
-                                userMessage = "Murojatingiz yuborildi bizdan javob kuting";
+                                userMessage = "Murojatingiz yuborildi bizdan javob kuting! Ariza raqami №-"+requestUsers.getId();
                                 user.setState(State.START);
                                 user.setStatus(true);
                                 user.setRole(Role.ROLE_MUHLIS);
@@ -1105,6 +1174,7 @@ public class BaseBot extends TelegramLongPollingBot {
                                 break;
                         }
                         break;
+
                 }
 
 
@@ -1327,6 +1397,7 @@ public class BaseBot extends TelegramLongPollingBot {
                             execute(userServiceBot.gethelplist(), null);
                             break;
                         case Constant.hujjat:
+                            send_passport(ketmon.get());
                             break;
                         case Constant.LocatsiyaON:
                             sendLocation(ketmon.get().getId());
@@ -1532,9 +1603,8 @@ public class BaseBot extends TelegramLongPollingBot {
         }
     }
 
-    private void send_findName(String name) {
+    private void send_findName(List<Ketmon> ketmonList, String name) {
 
-        List<Ketmon> ketmonList = userRepository.findByRoleAndFullNameContainingIgnoreCase(Role.ROLE_MUHLIS, name);
 
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(userChatId);
@@ -1574,6 +1644,64 @@ public class BaseBot extends TelegramLongPollingBot {
         keyboardRows.add(keyboardRow);
 
         replyKeyboardMarkup.setKeyboard(keyboardRows);
+
+        SendMessage sendMessage1 = new SendMessage();
+        sendMessage1.setChatId(userChatId);
+        sendMessage1.setText("tanlang ✅");
+        sendMessage1.setReplyMarkup(replyKeyboardMarkup);
+
+
+        try {
+            execute(sendMessage);
+            execute(sendMessage1);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void send_findId(Ketmon user, Integer id) {
+
+
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(userChatId);
+        sendMessage.setParseMode("HTML");
+        sendMessage.setText("\uD83D\uDD0E <b>" + id + "</b>");
+
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
+
+
+        List<InlineKeyboardButton> keyboardRows = new ArrayList<>();
+        List<InlineKeyboardButton> keyboardRows2 = new ArrayList<>();
+
+        InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
+        InlineKeyboardButton inlineKeyboardButton1 = new InlineKeyboardButton();
+
+        inlineKeyboardButton.setText(user.getFullName() + "  " + user.getCity() + "  " + user.getAge()).setCallbackData(user.getId() + Constant.ism);
+        keyboardRows.add(inlineKeyboardButton);
+        rowList.add(keyboardRows);
+
+
+        keyboardRows2.add(inlineKeyboardButton1.setText(Constant.Back).setCallbackData("4546" + Constant.inlineBACK));
+        rowList.add(keyboardRows2);
+
+
+        inlineKeyboardMarkup.setKeyboard(rowList);
+        sendMessage.setReplyMarkup(inlineKeyboardMarkup);
+
+
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setOneTimeKeyboard(true);
+        replyKeyboardMarkup.setSelective(true);
+
+        List<KeyboardRow> keyboardRows5 = new ArrayList<>();
+        KeyboardRow keyboardRow = new KeyboardRow();
+
+        keyboardRow.add(Constant.Back);
+        keyboardRows5.add(keyboardRow);
+
+        replyKeyboardMarkup.setKeyboard(keyboardRows5);
 
         SendMessage sendMessage1 = new SendMessage();
         sendMessage1.setChatId(userChatId);
@@ -1746,15 +1874,19 @@ public class BaseBot extends TelegramLongPollingBot {
 
 
         InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
-        InlineKeyboardButton inlineKeyboardButton1 = new InlineKeyboardButton();
+
         InlineKeyboardButton inlineKeyboardButton3 = new InlineKeyboardButton();
         InlineKeyboardButton inlineKeyboardButton4 = new InlineKeyboardButton();
 
 
         inlineKeyboardButton.setText("Yordam berish").setCallbackData(user.getId() + Constant.yordam);
-        inlineKeyboardButton1.setText("Hujjatlari").setCallbackData(user.getId() + Constant.hujjat);
 
-
+        List<Passport> passports = passportRepository.findAllByUsers(users.get());
+        if (passports.size() != 0) {
+            InlineKeyboardButton inlineKeyboardButton1 = new InlineKeyboardButton();
+            inlineKeyboardButton1.setText("Hujjatlari").setCallbackData(user.getId() + Constant.hujjat);
+            keyboardRows.add(inlineKeyboardButton1);
+        }
         if (user.getLat() != null) {
             InlineKeyboardButton inlineKeyboardButton2 = new InlineKeyboardButton();
             inlineKeyboardButton2.setText("Locatsiya").setCallbackData(user.getId() + Constant.LocatsiyaON);
@@ -1771,9 +1903,7 @@ public class BaseBot extends TelegramLongPollingBot {
 
 
         keyboardRows.add(inlineKeyboardButton);
-        keyboardRows.add(inlineKeyboardButton1);
         keyboardRows2.add(inlineKeyboardButton4);
-
         rowList.add(keyboardRows);
         rowList.add(keyboardRows1);
         rowList.add(keyboardRows2);
@@ -1785,6 +1915,33 @@ public class BaseBot extends TelegramLongPollingBot {
 
         try {
             execute(new_message);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void send_adminHisobot(List<HelpAndUsers> byAdminAndDate, String date) {
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.
+                append("<b>Volantyor : </b>  " + byAdminAndDate.get(0).getAdmin()).
+                append("\n").
+                append("\n<b>Bugun ehson olganlar röyhati </b> " + date);
+        for (HelpAndUsers helpAndUsers : byAdminAndDate) {
+            stringBuilder.
+                    append("\n▪️<i> " + helpAndUsers.getUsers().getFullName() + "</i>  \uD83D\uDCDE" + helpAndUsers.getUsers().getPhoneNumber());
+        }
+
+        stringBuilder.append("\n<b>Jami</b> " + byAdminAndDate.size() + " ta \uD83D\uDC69\u200D\uD83D\uDC69\u200D\uD83D\uDC67");
+
+
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setParseMode("HTML");
+        sendMessage.setChatId(userChatId);
+        sendMessage.setText(String.valueOf(stringBuilder));
+
+        try {
+            execute(sendMessage);
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }

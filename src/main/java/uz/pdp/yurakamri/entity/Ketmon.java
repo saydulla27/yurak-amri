@@ -30,7 +30,7 @@ public class Ketmon {
     private String password;
     private boolean status;
     private boolean blacklist;
-    private String company;
+    private String childAge;
     private String city;
     private String rayon;
     private String street_home;

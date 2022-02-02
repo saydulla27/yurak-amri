@@ -31,7 +31,7 @@ public class HelpAndUsers {
 
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Ketmon users;
 
     @JsonIgnore

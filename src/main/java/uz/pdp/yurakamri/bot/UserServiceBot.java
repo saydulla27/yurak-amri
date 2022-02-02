@@ -116,20 +116,17 @@ public class UserServiceBot {
         KeyboardRow keyboardRow = new KeyboardRow();
         KeyboardRow keyboardRow1 = new KeyboardRow();
         KeyboardRow keyboardRow2 = new KeyboardRow();
-        KeyboardRow keyboardRow3 = new KeyboardRow();
-        KeyboardRow keyboardRow4 = new KeyboardRow();
-        keyboardRow.add("Röyhatga olish");
+
+        keyboardRow.add(Constant.Royhatga_olish);
         keyboardRow1.add(Constant.Arizalar);
         keyboardRow1.add(Constant.ArizalarBilanIshlash);
         keyboardRow2.add(Constant.Qidirish);
-        keyboardRow2.add(Constant.YordamOlganlar);
-        keyboardRow3.add(Constant.Malumotlar);
+        keyboardRow2.add(Constant.Malumotlar);
 
 
         keyboardRows.add(keyboardRow);
         keyboardRows.add(keyboardRow1);
         keyboardRows.add(keyboardRow2);
-        keyboardRows.add(keyboardRow3);
         replyKeyboardMarkup.setKeyboard(keyboardRows);
         return replyKeyboardMarkup;
     }
@@ -205,17 +202,15 @@ public class UserServiceBot {
         List<KeyboardRow> keyboardRows = new ArrayList<>();
         KeyboardRow keyboardRow = new KeyboardRow();
         KeyboardRow keyboardRow1 = new KeyboardRow();
-        KeyboardRow keyboardRow2 = new KeyboardRow();
+
 
         keyboardRow.add(Constant.ismFamilya);
         keyboardRow.add(Constant.Ariza_raqami);
         keyboardRow1.add(Constant.Tel_nomer);
-        keyboardRow1.add(Constant.Child);
-        keyboardRow2.add(Constant.Back);
+        keyboardRow1.add(Constant.Back);
 
         keyboardRows.add(keyboardRow);
         keyboardRows.add(keyboardRow1);
-        keyboardRows.add(keyboardRow2);
 
         replyKeyboardMarkup.setKeyboard(keyboardRows);
         return replyKeyboardMarkup;

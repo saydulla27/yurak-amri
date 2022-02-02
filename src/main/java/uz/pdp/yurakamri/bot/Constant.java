@@ -17,11 +17,11 @@ public interface Constant {
 
 
 
-    String Arizalar = "Arizalar";
-    String YordamOlganlar = "Yordam olganlar";
-    String Qidirish = "Qidirish";
-    String Malumotlar = "Hisobot";
-    String ArizalarBilanIshlash = "Arizalar bilan ishlash";
+    String Royhatga_olish = "Röyhatga olish \uD83D\uDCDD";
+    String Arizalar = "Arizalar \uD83E\uDDFE";
+    String Qidirish = "Qidirish \uD83D\uDD0E";
+    String Malumotlar = "Hisobot \uD83D\uDDD3";
+    String ArizalarBilanIshlash = "Tasdiqlangan arizalar \uD83D\uDCCC";
 
     String Oziq = "(oziq)";
     String Rad = "(rad)";
@@ -47,7 +47,6 @@ public interface Constant {
     String ismFamilya = "Ism Familya";
     String Ariza_raqami = "Ariza raqami";
     String Tel_nomer = "Telefon raqam";
-    String Child = "Bolalar soni";
 
 
 

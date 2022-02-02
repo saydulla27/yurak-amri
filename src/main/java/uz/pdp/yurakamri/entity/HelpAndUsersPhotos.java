@@ -1,6 +1,7 @@
 package uz.pdp.yurakamri.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,13 +24,9 @@ public class HelpAndUsersPhotos {
     private String photoId;
 
 
-
-
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private HelpAndUsers helps;
-
-
-
 
 
 }

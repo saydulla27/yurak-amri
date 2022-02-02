@@ -64,6 +64,8 @@ public interface State {
     String Find_3 = "find_3";
     String Find_4 = "find_4";
     String Find_5 = "find_5";
+    String Find_6 = "find_6";
+    String Find_7 = "find_7";
 
 
 
